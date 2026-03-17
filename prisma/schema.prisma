@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id               String    @id @default(uuid())
+  name             String
+  domain           String?   @unique
+  subscriptionPlan String    @default("FREE")
+  status           String    @default("ACTIVE")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  users            User[]
+  branches         Branch[]
+  leads            Lead[]
+}
+
+model Branch {
+  id             String       @id @default(uuid())
+  name           String
+  address        String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  users          User[]
+
+  @@index([organizationId])
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  password       String
+  firstName      String?
+  lastName       String?
+  role           String       @default("USER") // e.g. ADMIN, SALES_MANAGER, SALES_REP, SUPPORT_AGENT
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branchId       String?
+  branch         Branch?      @relation(fields: [branchId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  assignedLeads  Lead[]
+
+  @@index([organizationId])
+}
+
+model Lead {
+  id             String       @id @default(uuid())
+  firstName      String
+  lastName       String
+  company        String?
+  email          String?
+  phone          String?
+  source         String?
+  status         String       @default("NEW")
+  notes          String?
+
+  assignedUserId String?
+  assignedUser   User?        @relation(fields: [assignedUserId], references: [id])
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+}
