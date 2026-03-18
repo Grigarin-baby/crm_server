@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './task.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class TasksController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new task' })
-  create(@TenantId() organizationId: string, @Body() createTaskDto: CreateTaskDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createTaskDto: CreateTaskDto,
+  ) {
     return this.tasksService.create(organizationId, createTaskDto);
   }
 
@@ -35,7 +52,11 @@ export class TasksController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a task' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
     return this.tasksService.update(organizationId, id, updateTaskDto);
   }
 

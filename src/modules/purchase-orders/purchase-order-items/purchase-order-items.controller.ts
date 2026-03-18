@@ -1,11 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { PurchaseOrderItemsService } from './purchase-order-items.service';
-import { CreatePurchaseOrderItemDto, UpdatePurchaseOrderItemDto } from './purchase-order-item.dto';
-import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
-import { TenantGuard } from '../../core/auth/tenant.guard';
-import { TenantId } from '../../core/tenant/tenant.decorator';
-import { RolesGuard } from '../../core/auth/roles.guard';
+import {
+  CreatePurchaseOrderItemDto,
+  UpdatePurchaseOrderItemDto,
+} from './purchase-order-item.dto';
+import { JwtAuthGuard } from '../../../core/auth/jwt-auth.guard';
+import { TenantGuard } from '../../../core/auth/tenant.guard';
+import { TenantId } from '../../../core/tenant/tenant.decorator';
+import { RolesGuard } from '../../../core/auth/roles.guard';
 
 @ApiTags('purchase-order-items')
 @ApiBearerAuth()
@@ -13,19 +32,33 @@ import { RolesGuard } from '../../core/auth/roles.guard';
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/purchase-order-items')
 export class PurchaseOrderItemsController {
-  constructor(private readonly purchaseOrderItemsService: PurchaseOrderItemsService) {}
+  constructor(
+    private readonly purchaseOrderItemsService: PurchaseOrderItemsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Add a new item to a purchase order' })
-  create(@TenantId() organizationId: string, @Body() createPurchaseOrderItemDto: CreatePurchaseOrderItemDto) {
-    return this.purchaseOrderItemsService.create(organizationId, createPurchaseOrderItemDto);
+  create(
+    @TenantId() organizationId: string,
+    @Body() createPurchaseOrderItemDto: CreatePurchaseOrderItemDto,
+  ) {
+    return this.purchaseOrderItemsService.create(
+      organizationId,
+      createPurchaseOrderItemDto,
+    );
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all purchase order items' })
   @ApiQuery({ name: 'purchaseOrderId', required: false })
-  findAll(@TenantId() organizationId: string, @Query('purchaseOrderId') purchaseOrderId?: string) {
-    return this.purchaseOrderItemsService.findAll(organizationId, purchaseOrderId);
+  findAll(
+    @TenantId() organizationId: string,
+    @Query('purchaseOrderId') purchaseOrderId?: string,
+  ) {
+    return this.purchaseOrderItemsService.findAll(
+      organizationId,
+      purchaseOrderId,
+    );
   }
 
   @Get(':id')
@@ -36,8 +69,16 @@ export class PurchaseOrderItemsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a purchase order item' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updatePurchaseOrderItemDto: UpdatePurchaseOrderItemDto) {
-    return this.purchaseOrderItemsService.update(organizationId, id, updatePurchaseOrderItemDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updatePurchaseOrderItemDto: UpdatePurchaseOrderItemDto,
+  ) {
+    return this.purchaseOrderItemsService.update(
+      organizationId,
+      id,
+      updatePurchaseOrderItemDto,
+    );
   }
 
   @Delete(':id')

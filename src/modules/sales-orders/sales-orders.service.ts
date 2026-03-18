@@ -24,7 +24,8 @@ export class SalesOrdersService {
       where: { id, organizationId },
       include: { customer: true, quote: true },
     });
-    if (!order) throw new NotFoundException(`SalesOrder with ID ${id} not found`);
+    if (!order)
+      throw new NotFoundException(`SalesOrder with ID ${id} not found`);
     return order;
   }
 

@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './customer.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class CustomersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new customer' })
-  create(@TenantId() organizationId: string, @Body() createCustomerDto: CreateCustomerDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createCustomerDto: CreateCustomerDto,
+  ) {
     return this.customersService.create(organizationId, createCustomerDto);
   }
 

@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class ProductsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
-  create(@TenantId() organizationId: string, @Body() createProductDto: CreateProductDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createProductDto: CreateProductDto,
+  ) {
     return this.productsService.create(organizationId, createProductDto);
   }
 
@@ -35,7 +52,11 @@ export class ProductsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     return this.productsService.update(organizationId, id, updateProductDto);
   }
 

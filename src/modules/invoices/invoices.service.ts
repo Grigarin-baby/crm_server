@@ -24,7 +24,8 @@ export class InvoicesService {
       where: { id, organizationId },
       include: { customer: true, salesOrder: true },
     });
-    if (!invoice) throw new NotFoundException(`Invoice with ID ${id} not found`);
+    if (!invoice)
+      throw new NotFoundException(`Invoice with ID ${id} not found`);
     return invoice;
   }
 

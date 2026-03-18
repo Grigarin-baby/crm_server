@@ -15,14 +15,24 @@ export class TicketsService {
   async findAll(organizationId: string) {
     return this.prisma.ticket.findMany({
       where: { organizationId },
-      include: { customer: true, assignedAgent: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        customer: true,
+        assignedAgent: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
   }
 
   async findOne(organizationId: string, id: string) {
     const ticket = await this.prisma.ticket.findFirst({
       where: { id, organizationId },
-      include: { customer: true, assignedAgent: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        customer: true,
+        assignedAgent: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
     if (!ticket) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return ticket;

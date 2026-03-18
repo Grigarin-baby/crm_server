@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { VendorsService } from './vendors.service';
 import { CreateVendorDto, UpdateVendorDto } from './vendor.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class VendorsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new vendor' })
-  create(@TenantId() organizationId: string, @Body() createVendorDto: CreateVendorDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createVendorDto: CreateVendorDto,
+  ) {
     return this.vendorsService.create(organizationId, createVendorDto);
   }
 
@@ -35,7 +52,11 @@ export class VendorsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a vendor' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateVendorDto: UpdateVendorDto,
+  ) {
     return this.vendorsService.update(organizationId, id, updateVendorDto);
   }
 

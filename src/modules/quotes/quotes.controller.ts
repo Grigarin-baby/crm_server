@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { QuotesService } from './quotes.service';
 import { CreateQuoteDto, UpdateQuoteDto } from './quote.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class QuotesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new quote' })
-  create(@TenantId() organizationId: string, @Body() createQuoteDto: CreateQuoteDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createQuoteDto: CreateQuoteDto,
+  ) {
     return this.quotesService.create(organizationId, createQuoteDto);
   }
 
@@ -35,7 +52,11 @@ export class QuotesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a quote' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateQuoteDto: UpdateQuoteDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateQuoteDto: UpdateQuoteDto,
+  ) {
     return this.quotesService.update(organizationId, id, updateQuoteDto);
   }
 

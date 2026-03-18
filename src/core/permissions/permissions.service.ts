@@ -25,7 +25,8 @@ export class PermissionsService {
     const permission = await this.prisma.permission.findFirst({
       where: { id, organizationId },
     });
-    if (!permission) throw new NotFoundException(`Permission with ID ${id} not found`);
+    if (!permission)
+      throw new NotFoundException(`Permission with ID ${id} not found`);
     return permission;
   }
 

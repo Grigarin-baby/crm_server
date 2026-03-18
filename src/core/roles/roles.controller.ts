@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -19,7 +33,10 @@ export class RolesController {
   @Post()
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new role' })
-  create(@TenantId() organizationId: string, @Body() createRoleDto: CreateRoleDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createRoleDto: CreateRoleDto,
+  ) {
     return this.rolesService.create(organizationId, createRoleDto);
   }
 
@@ -38,7 +55,11 @@ export class RolesController {
   @Patch(':id')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Update a role' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateRoleDto: UpdateRoleDto,
+  ) {
     return this.rolesService.update(organizationId, id, updateRoleDto);
   }
 

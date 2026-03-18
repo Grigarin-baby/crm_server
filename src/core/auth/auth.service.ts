@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -33,12 +37,17 @@ export class AuthService {
       },
     });
 
-    return this.generateToken(user.id, user.email, user.organizationId, user.role);
+    return this.generateToken(
+      user.id,
+      user.email,
+      user.organizationId,
+      user.role,
+    );
   }
 
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findFirst({
-      where: { 
+      where: {
         email: dto.email,
         organizationId: dto.organizationId,
       },
@@ -54,10 +63,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.generateToken(user.id, user.email, user.organizationId, user.role);
+    return this.generateToken(
+      user.id,
+      user.email,
+      user.organizationId,
+      user.role,
+    );
   }
 
-  private async generateToken(userId: string, email: string, organizationId: string, role: string) {
+  private async generateToken(
+    userId: string,
+    email: string,
+    organizationId: string,
+    role: string,
+  ) {
     const payload = { sub: userId, email, organizationId, role };
     return {
       access_token: await this.jwtService.signAsync(payload),

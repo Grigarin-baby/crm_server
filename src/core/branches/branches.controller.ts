@@ -1,5 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { BranchesService } from './branches.service';
 import { CreateBranchDto, UpdateBranchDto } from './branch.dto';
 import { TenantId } from '../tenant/tenant.decorator';
@@ -12,7 +20,10 @@ export class BranchesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new branch' })
-  create(@TenantId() organizationId: string, @Body() createBranchDto: CreateBranchDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createBranchDto: CreateBranchDto,
+  ) {
     return this.branchesService.create(organizationId, createBranchDto);
   }
 

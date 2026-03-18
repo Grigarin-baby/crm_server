@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { LeadsService } from './leads.service';
 import { CreateLeadDto, UpdateLeadDto } from './lead.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -19,7 +33,10 @@ export class LeadsController {
   @Post()
   @Roles('ADMIN', 'SALES_MANAGER', 'SALES_REP')
   @ApiOperation({ summary: 'Create a new lead' })
-  create(@TenantId() organizationId: string, @Body() createLeadDto: CreateLeadDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createLeadDto: CreateLeadDto,
+  ) {
     return this.leadsService.create(organizationId, createLeadDto);
   }
 

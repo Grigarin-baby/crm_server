@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto, UpdateTicketDto } from './ticket.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class TicketsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new support ticket' })
-  create(@TenantId() organizationId: string, @Body() createTicketDto: CreateTicketDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createTicketDto: CreateTicketDto,
+  ) {
     return this.ticketsService.create(organizationId, createTicketDto);
   }
 
@@ -35,7 +52,11 @@ export class TicketsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a ticket' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateTicketDto: UpdateTicketDto,
+  ) {
     return this.ticketsService.update(organizationId, id, updateTicketDto);
   }
 

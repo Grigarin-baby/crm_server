@@ -18,14 +18,24 @@ export class DealsService {
   async findAll(organizationId: string) {
     return this.prisma.deal.findMany({
       where: { organizationId },
-      include: { customer: true, assignedUser: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        customer: true,
+        assignedUser: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
   }
 
   async findOne(organizationId: string, id: string) {
     const deal = await this.prisma.deal.findFirst({
       where: { id, organizationId },
-      include: { customer: true, assignedUser: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        customer: true,
+        assignedUser: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
     if (!deal) throw new NotFoundException(`Deal with ID ${id} not found`);
     return deal;

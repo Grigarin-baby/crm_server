@@ -22,7 +22,8 @@ export class ProductsService {
     const product = await this.prisma.product.findFirst({
       where: { id, organizationId },
     });
-    if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
+    if (!product)
+      throw new NotFoundException(`Product with ID ${id} not found`);
     return product;
   }
 

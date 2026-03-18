@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
-import { CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from './purchase-order.dto';
+import {
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from './purchase-order.dto';
 
 @Injectable()
 export class PurchaseOrdersService {
@@ -24,11 +27,16 @@ export class PurchaseOrdersService {
       where: { id, organizationId },
       include: { vendor: true },
     });
-    if (!po) throw new NotFoundException(`PurchaseOrder with ID ${id} not found`);
+    if (!po)
+      throw new NotFoundException(`PurchaseOrder with ID ${id} not found`);
     return po;
   }
 
-  async update(organizationId: string, id: string, dto: UpdatePurchaseOrderDto) {
+  async update(
+    organizationId: string,
+    id: string,
+    dto: UpdatePurchaseOrderDto,
+  ) {
     await this.findOne(organizationId, id);
     return this.prisma.purchaseOrder.update({
       where: { id },

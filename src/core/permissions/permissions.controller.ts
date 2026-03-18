@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto, UpdatePermissionDto } from './permission.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -19,7 +33,10 @@ export class PermissionsController {
   @Post()
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create a new permission' })
-  create(@TenantId() organizationId: string, @Body() createPermissionDto: CreatePermissionDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createPermissionDto: CreatePermissionDto,
+  ) {
     return this.permissionsService.create(organizationId, createPermissionDto);
   }
 
@@ -38,8 +55,16 @@ export class PermissionsController {
   @Patch(':id')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Update a permission' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
-    return this.permissionsService.update(organizationId, id, updatePermissionDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updatePermissionDto: UpdatePermissionDto,
+  ) {
+    return this.permissionsService.update(
+      organizationId,
+      id,
+      updatePermissionDto,
+    );
   }
 
   @Delete(':id')

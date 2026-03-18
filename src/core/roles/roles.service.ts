@@ -12,9 +12,11 @@ export class RolesService {
       data: {
         ...rest,
         organizationId,
-        permissions: permissionIds ? {
-          connect: permissionIds.map(id => ({ id }))
-        } : undefined,
+        permissions: permissionIds
+          ? {
+              connect: permissionIds.map((id) => ({ id })),
+            }
+          : undefined,
       },
     });
   }
@@ -42,9 +44,11 @@ export class RolesService {
       where: { id },
       data: {
         ...rest,
-        permissions: permissionIds ? {
-          set: permissionIds.map(id => ({ id }))
-        } : undefined,
+        permissions: permissionIds
+          ? {
+              set: permissionIds.map((id) => ({ id })),
+            }
+          : undefined,
       },
     });
   }

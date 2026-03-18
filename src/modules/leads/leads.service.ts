@@ -18,17 +18,27 @@ export class LeadsService {
   async findAll(organizationId: string) {
     return this.prisma.lead.findMany({
       where: { organizationId },
-      include: { assignedUser: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        assignedUser: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
   }
 
   async findOne(organizationId: string, id: string) {
     const lead = await this.prisma.lead.findFirst({
       where: { id, organizationId },
-      include: { assignedUser: { select: { id: true, email: true, firstName: true, lastName: true } } },
+      include: {
+        assignedUser: {
+          select: { id: true, email: true, firstName: true, lastName: true },
+        },
+      },
     });
     if (!lead) {
-      throw new NotFoundException(`Lead with ID ${id} not found in this organization`);
+      throw new NotFoundException(
+        `Lead with ID ${id} not found in this organization`,
+      );
     }
     return lead;
   }

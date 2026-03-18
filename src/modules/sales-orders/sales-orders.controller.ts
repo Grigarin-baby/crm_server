@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { SalesOrdersService } from './sales-orders.service';
 import { CreateSalesOrderDto, UpdateSalesOrderDto } from './sales-order.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class SalesOrdersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new sales order' })
-  create(@TenantId() organizationId: string, @Body() createSalesOrderDto: CreateSalesOrderDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createSalesOrderDto: CreateSalesOrderDto,
+  ) {
     return this.salesOrdersService.create(organizationId, createSalesOrderDto);
   }
 
@@ -35,8 +52,16 @@ export class SalesOrdersController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a sales order' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateSalesOrderDto: UpdateSalesOrderDto) {
-    return this.salesOrdersService.update(organizationId, id, updateSalesOrderDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateSalesOrderDto: UpdateSalesOrderDto,
+  ) {
+    return this.salesOrdersService.update(
+      organizationId,
+      id,
+      updateSalesOrderDto,
+    );
   }
 
   @Delete(':id')

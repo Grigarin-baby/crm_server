@@ -1,11 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { QuoteItemsService } from './quote-items.service';
 import { CreateQuoteItemDto, UpdateQuoteItemDto } from './quote-item.dto';
-import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
-import { TenantGuard } from '../../core/auth/tenant.guard';
-import { TenantId } from '../../core/tenant/tenant.decorator';
-import { RolesGuard } from '../../core/auth/roles.guard';
+import { JwtAuthGuard } from '../../../core/auth/jwt-auth.guard';
+import { TenantGuard } from '../../../core/auth/tenant.guard';
+import { TenantId } from '../../../core/tenant/tenant.decorator';
+import { RolesGuard } from '../../../core/auth/roles.guard';
 
 @ApiTags('quote-items')
 @ApiBearerAuth()
@@ -17,14 +33,20 @@ export class QuoteItemsController {
 
   @Post()
   @ApiOperation({ summary: 'Add a new item to a quote' })
-  create(@TenantId() organizationId: string, @Body() createQuoteItemDto: CreateQuoteItemDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createQuoteItemDto: CreateQuoteItemDto,
+  ) {
     return this.quoteItemsService.create(organizationId, createQuoteItemDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all quote items' })
   @ApiQuery({ name: 'quoteId', required: false })
-  findAll(@TenantId() organizationId: string, @Query('quoteId') quoteId?: string) {
+  findAll(
+    @TenantId() organizationId: string,
+    @Query('quoteId') quoteId?: string,
+  ) {
     return this.quoteItemsService.findAll(organizationId, quoteId);
   }
 
@@ -36,8 +58,16 @@ export class QuoteItemsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a quote item' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateQuoteItemDto: UpdateQuoteItemDto) {
-    return this.quoteItemsService.update(organizationId, id, updateQuoteItemDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateQuoteItemDto: UpdateQuoteItemDto,
+  ) {
+    return this.quoteItemsService.update(
+      organizationId,
+      id,
+      updateQuoteItemDto,
+    );
   }
 
   @Delete(':id')

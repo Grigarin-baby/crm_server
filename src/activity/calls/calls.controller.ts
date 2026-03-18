@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { CallsService } from './calls.service';
 import { CreateCallDto, UpdateCallDto } from './call.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class CallsController {
 
   @Post()
   @ApiOperation({ summary: 'Log a new call' })
-  create(@TenantId() organizationId: string, @Body() createCallDto: CreateCallDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createCallDto: CreateCallDto,
+  ) {
     return this.callsService.create(organizationId, createCallDto);
   }
 
@@ -35,7 +52,11 @@ export class CallsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a call log' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateCallDto: UpdateCallDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateCallDto: UpdateCallDto,
+  ) {
     return this.callsService.update(organizationId, id, updateCallDto);
   }
 

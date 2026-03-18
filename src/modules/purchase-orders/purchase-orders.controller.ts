@@ -1,7 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { PurchaseOrdersService } from './purchase-orders.service';
-import { CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from './purchase-order.dto';
+import {
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from './purchase-order.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
 import { TenantGuard } from '../../core/auth/tenant.guard';
 import { TenantId } from '../../core/tenant/tenant.decorator';
@@ -17,8 +34,14 @@ export class PurchaseOrdersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new purchase order' })
-  create(@TenantId() organizationId: string, @Body() createPurchaseOrderDto: CreatePurchaseOrderDto) {
-    return this.purchaseOrdersService.create(organizationId, createPurchaseOrderDto);
+  create(
+    @TenantId() organizationId: string,
+    @Body() createPurchaseOrderDto: CreatePurchaseOrderDto,
+  ) {
+    return this.purchaseOrdersService.create(
+      organizationId,
+      createPurchaseOrderDto,
+    );
   }
 
   @Get()
@@ -35,8 +58,16 @@ export class PurchaseOrdersController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a purchase order' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updatePurchaseOrderDto: UpdatePurchaseOrderDto) {
-    return this.purchaseOrdersService.update(organizationId, id, updatePurchaseOrderDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updatePurchaseOrderDto: UpdatePurchaseOrderDto,
+  ) {
+    return this.purchaseOrdersService.update(
+      organizationId,
+      id,
+      updatePurchaseOrderDto,
+    );
   }
 
   @Delete(':id')

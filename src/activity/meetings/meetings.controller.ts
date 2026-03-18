@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { MeetingsService } from './meetings.service';
 import { CreateMeetingDto, UpdateMeetingDto } from './meeting.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class MeetingsController {
 
   @Post()
   @ApiOperation({ summary: 'Schedule a new meeting' })
-  create(@TenantId() organizationId: string, @Body() createMeetingDto: CreateMeetingDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createMeetingDto: CreateMeetingDto,
+  ) {
     return this.meetingsService.create(organizationId, createMeetingDto);
   }
 
@@ -35,7 +52,11 @@ export class MeetingsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update meeting details' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateMeetingDto: UpdateMeetingDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateMeetingDto: UpdateMeetingDto,
+  ) {
     return this.meetingsService.update(organizationId, id, updateMeetingDto);
   }
 

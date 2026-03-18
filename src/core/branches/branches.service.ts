@@ -26,7 +26,9 @@ export class BranchesService {
       where: { id, organizationId },
     });
     if (!branch) {
-      throw new NotFoundException(`Branch with ID ${id} not found in this organization`);
+      throw new NotFoundException(
+        `Branch with ID ${id} not found in this organization`,
+      );
     }
     return branch;
   }

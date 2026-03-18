@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { DealsService } from './deals.service';
 import { CreateDealDto, UpdateDealDto } from './deal.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class DealsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new deal' })
-  create(@TenantId() organizationId: string, @Body() createDealDto: CreateDealDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createDealDto: CreateDealDto,
+  ) {
     return this.dealsService.create(organizationId, createDealDto);
   }
 
@@ -35,7 +52,11 @@ export class DealsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a deal' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateDealDto: UpdateDealDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateDealDto: UpdateDealDto,
+  ) {
     return this.dealsService.update(organizationId, id, updateDealDto);
   }
 

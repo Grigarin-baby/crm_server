@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { InvoicesService } from './invoices.service';
 import { CreateInvoiceDto, UpdateInvoiceDto } from './invoice.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class InvoicesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new invoice' })
-  create(@TenantId() organizationId: string, @Body() createInvoiceDto: CreateInvoiceDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createInvoiceDto: CreateInvoiceDto,
+  ) {
     return this.invoicesService.create(organizationId, createInvoiceDto);
   }
 
@@ -35,7 +52,11 @@ export class InvoicesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an invoice' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateInvoiceDto: UpdateInvoiceDto,
+  ) {
     return this.invoicesService.update(organizationId, id, updateInvoiceDto);
   }
 

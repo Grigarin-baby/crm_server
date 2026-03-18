@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
@@ -12,7 +20,10 @@ export class UsersController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  create(@TenantId() organizationId: string, @Body() createUserDto: CreateUserDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     return this.usersService.create(organizationId, createUserDto);
   }
 

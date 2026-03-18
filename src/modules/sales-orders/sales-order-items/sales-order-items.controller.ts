@@ -1,11 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader, ApiQuery } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { SalesOrderItemsService } from './sales-order-items.service';
-import { CreateSalesOrderItemDto, UpdateSalesOrderItemDto } from './sales-order-item.dto';
-import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
-import { TenantGuard } from '../../core/auth/tenant.guard';
-import { TenantId } from '../../core/tenant/tenant.decorator';
-import { RolesGuard } from '../../core/auth/roles.guard';
+import {
+  CreateSalesOrderItemDto,
+  UpdateSalesOrderItemDto,
+} from './sales-order-item.dto';
+import { JwtAuthGuard } from '../../../core/auth/jwt-auth.guard';
+import { TenantGuard } from '../../../core/auth/tenant.guard';
+import { TenantId } from '../../../core/tenant/tenant.decorator';
+import { RolesGuard } from '../../../core/auth/roles.guard';
 
 @ApiTags('sales-order-items')
 @ApiBearerAuth()
@@ -13,18 +32,29 @@ import { RolesGuard } from '../../core/auth/roles.guard';
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/sales-order-items')
 export class SalesOrderItemsController {
-  constructor(private readonly salesOrderItemsService: SalesOrderItemsService) {}
+  constructor(
+    private readonly salesOrderItemsService: SalesOrderItemsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Add a new item to a sales order' })
-  create(@TenantId() organizationId: string, @Body() createSalesOrderItemDto: CreateSalesOrderItemDto) {
-    return this.salesOrderItemsService.create(organizationId, createSalesOrderItemDto);
+  create(
+    @TenantId() organizationId: string,
+    @Body() createSalesOrderItemDto: CreateSalesOrderItemDto,
+  ) {
+    return this.salesOrderItemsService.create(
+      organizationId,
+      createSalesOrderItemDto,
+    );
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all sales order items' })
   @ApiQuery({ name: 'salesOrderId', required: false })
-  findAll(@TenantId() organizationId: string, @Query('salesOrderId') salesOrderId?: string) {
+  findAll(
+    @TenantId() organizationId: string,
+    @Query('salesOrderId') salesOrderId?: string,
+  ) {
     return this.salesOrderItemsService.findAll(organizationId, salesOrderId);
   }
 
@@ -36,8 +66,16 @@ export class SalesOrderItemsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a sales order item' })
-  update(@TenantId() organizationId: string, @Param('id') id: string, @Body() updateSalesOrderItemDto: UpdateSalesOrderItemDto) {
-    return this.salesOrderItemsService.update(organizationId, id, updateSalesOrderItemDto);
+  update(
+    @TenantId() organizationId: string,
+    @Param('id') id: string,
+    @Body() updateSalesOrderItemDto: UpdateSalesOrderItemDto,
+  ) {
+    return this.salesOrderItemsService.update(
+      organizationId,
+      id,
+      updateSalesOrderItemDto,
+    );
   }
 
   @Delete(':id')

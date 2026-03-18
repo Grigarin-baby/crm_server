@@ -24,7 +24,8 @@ export class MeetingsService {
       where: { id, organizationId },
       include: { deal: true, contact: true },
     });
-    if (!meeting) throw new NotFoundException(`Meeting with ID ${id} not found`);
+    if (!meeting)
+      throw new NotFoundException(`Meeting with ID ${id} not found`);
     return meeting;
   }
 

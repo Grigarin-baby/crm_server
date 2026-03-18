@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiHeader } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto, UpdateContactDto } from './contact.dto';
 import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
@@ -17,7 +31,10 @@ export class ContactsController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new contact' })
-  create(@TenantId() organizationId: string, @Body() createContactDto: CreateContactDto) {
+  create(
+    @TenantId() organizationId: string,
+    @Body() createContactDto: CreateContactDto,
+  ) {
     return this.contactsService.create(organizationId, createContactDto);
   }
 

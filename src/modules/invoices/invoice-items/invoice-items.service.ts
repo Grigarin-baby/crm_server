@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../core/prisma/prisma.service';
+import { PrismaService } from '../../../core/prisma/prisma.service';
 import { CreateInvoiceItemDto, UpdateInvoiceItemDto } from './invoice-item.dto';
 
 @Injectable()
@@ -24,7 +24,8 @@ export class InvoiceItemsService {
       where: { id, organizationId },
       include: { product: true },
     });
-    if (!item) throw new NotFoundException(`InvoiceItem with ID ${id} not found`);
+    if (!item)
+      throw new NotFoundException(`InvoiceItem with ID ${id} not found`);
     return item;
   }
 
