@@ -10,14 +10,14 @@
 ## Dev Dependencies (Installed)
 - [x] `prisma`: Prisma CLI for schema management and migrations.
 
-## Authentication & Security (Planned)
-- [ ] `@nestjs/jwt`: JWT utilities for NestJS.
-- [ ] `@nestjs/passport`: Passport.js integration for NestJS.
-- [ ] `passport`: Authentication middleware for Node.js.
-- [ ] `passport-jwt`: Passport strategy for authenticating with a JSON Web Token.
-- [ ] `@types/passport-jwt`: TypeScript definitions for `passport-jwt`.
-- [ ] `bcrypt`: Library for hashing passwords.
-- [ ] `@types/bcrypt`: TypeScript definitions for `bcrypt`.
+## Authentication & Security (Installed)
+- [x] `@nestjs/jwt`: JWT utilities for NestJS.
+- [x] `@nestjs/passport`: Passport.js integration for NestJS.
+- [x] `passport`: Authentication middleware for Node.js.
+- [x] `passport-jwt`: Passport strategy for authenticating with a JSON Web Token.
+- [x] `@types/passport-jwt`: TypeScript definitions for `passport-jwt`.
+- [x] `bcrypt`: Library for hashing passwords.
+- [x] `@types/bcrypt`: TypeScript definitions for `bcrypt`.
 
 ## Testing (Planned)
 - [ ] `jest`: JavaScript testing framework (included by default in NestJS).
