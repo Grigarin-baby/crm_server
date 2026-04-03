@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { CreateMeetingDto, UpdateMeetingDto } from './meeting.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class MeetingsService {
@@ -12,11 +13,22 @@ export class MeetingsService {
     });
   }
 
-  async findAll(organizationId: string) {
-    return this.prisma.meeting.findMany({
-      where: { organizationId },
-      include: { deal: true, contact: true },
-    });
+  async findAll(organizationId: string, paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.meeting.findMany({
+        where: { organizationId },
+        include: { deal: true, contact: true },
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.meeting.count({
+        where: { organizationId },
+      }),
+    ]);
+
+    return { items, total, skip, take };
   }
 
   async findOne(organizationId: string, id: string) {

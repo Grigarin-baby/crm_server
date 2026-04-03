@@ -1,47 +1,63 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(organizationId: string, dto: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
     return this.prisma.user.create({
       data: {
         ...dto,
-        password: hashedPassword,
         organizationId,
       },
     });
   }
 
-  async findAll(organizationId: string) {
-    return this.prisma.user.findMany({
-      where: { organizationId },
+  async findAll(organizationId: string, paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where: { organizationId },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          role: true,
+          roleId: true,
+          branchId: true,
+          createdAt: true,
+        },
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count({
+        where: { organizationId },
+      }),
+    ]);
+
+    return { items, total, skip, take };
+  }
+
+  async findOne(organizationId: string, id: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { id, organizationId },
       select: {
         id: true,
         email: true,
         firstName: true,
         lastName: true,
         role: true,
+        roleId: true,
         branchId: true,
         createdAt: true,
       },
     });
-  }
-
-  async findOne(organizationId: string, id: string) {
-    const user = await this.prisma.user.findFirst({
-      where: { id, organizationId },
-    });
-    if (!user) {
-      throw new NotFoundException(
-        `User with ID ${id} not found in this organization`,
-      );
-    }
+    if (!user) throw new NotFoundException(`User with ID ${id} not found`);
     return user;
   }
 

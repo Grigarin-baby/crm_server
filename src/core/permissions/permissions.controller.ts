@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,6 +22,7 @@ import { TenantGuard } from '../auth/tenant.guard';
 import { TenantId } from '../tenant/tenant.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('core/permissions')
 @ApiBearerAuth()
@@ -42,8 +44,11 @@ export class PermissionsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all permissions' })
-  findAll(@TenantId() organizationId: string) {
-    return this.permissionsService.findAll(organizationId);
+  findAll(
+    @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.permissionsService.findAll(organizationId, paginationDto);
   }
 
   @Get(':id')

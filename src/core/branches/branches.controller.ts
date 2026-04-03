@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { BranchesService } from './branches.service';
 import { CreateBranchDto, UpdateBranchDto } from './branch.dto';
 import { TenantId } from '../tenant/tenant.decorator';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('branches')
 @ApiHeader({ name: 'x-organization-id', required: true })
@@ -29,8 +31,11 @@ export class BranchesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all branches for organization' })
-  findAll(@TenantId() organizationId: string) {
-    return this.branchesService.findAll(organizationId);
+  findAll(
+    @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.branchesService.findAll(organizationId, paginationDto);
   }
 
   @Get(':id')

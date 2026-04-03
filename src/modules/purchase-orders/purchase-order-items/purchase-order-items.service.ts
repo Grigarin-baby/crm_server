@@ -4,6 +4,7 @@ import {
   CreatePurchaseOrderItemDto,
   UpdatePurchaseOrderItemDto,
 } from './purchase-order-item.dto';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @Injectable()
 export class PurchaseOrderItemsService {
@@ -15,11 +16,24 @@ export class PurchaseOrderItemsService {
     });
   }
 
-  async findAll(organizationId: string, purchaseOrderId?: string) {
-    return this.prisma.purchaseOrderItem.findMany({
-      where: { organizationId, purchaseOrderId },
-      include: { product: true },
-    });
+  async findAll(
+    organizationId: string,
+    paginationDto: PaginationDto,
+    purchaseOrderId?: string,
+  ) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.purchaseOrderItem.findMany({
+        where: { organizationId, purchaseOrderId },
+        include: { product: true },
+        skip,
+        take,
+      }),
+      this.prisma.purchaseOrderItem.count({
+        where: { organizationId, purchaseOrderId },
+      }),
+    ]);
+    return { items, total, skip, take };
   }
 
   async findOne(organizationId: string, id: string) {

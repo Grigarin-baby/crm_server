@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { CreateDealDto, UpdateDealDto } from './deal.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class DealsService {
@@ -15,16 +16,26 @@ export class DealsService {
     });
   }
 
-  async findAll(organizationId: string) {
-    return this.prisma.deal.findMany({
-      where: { organizationId },
-      include: {
-        customer: true,
-        assignedUser: {
-          select: { id: true, email: true, firstName: true, lastName: true },
+  async findAll(organizationId: string, paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.deal.findMany({
+        where: { organizationId },
+        include: {
+          customer: true,
+          assignedUser: {
+            select: { id: true, email: true, firstName: true, lastName: true },
+          },
         },
-      },
-    });
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.deal.count({
+        where: { organizationId },
+      }),
+    ]);
+    return { items, total, skip, take };
   }
 
   async findOne(organizationId: string, id: string) {
@@ -35,9 +46,15 @@ export class DealsService {
         assignedUser: {
           select: { id: true, email: true, firstName: true, lastName: true },
         },
+        quotes: true,
+        meetings: true,
+        calls: true,
+        tasks: true,
       },
     });
-    if (!deal) throw new NotFoundException(`Deal with ID ${id} not found`);
+    if (!deal) {
+      throw new NotFoundException(`Deal with ID ${id} not found`);
+    }
     return deal;
   }
 

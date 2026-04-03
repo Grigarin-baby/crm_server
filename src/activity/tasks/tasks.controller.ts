@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from '../../core/auth/jwt-auth.guard';
 import { TenantGuard } from '../../core/auth/tenant.guard';
 import { TenantId } from '../../core/tenant/tenant.decorator';
 import { RolesGuard } from '../../core/auth/roles.guard';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('activity/tasks')
 @ApiBearerAuth()
@@ -40,8 +42,11 @@ export class TasksController {
 
   @Get()
   @ApiOperation({ summary: 'Get all tasks' })
-  findAll(@TenantId() organizationId: string) {
-    return this.tasksService.findAll(organizationId);
+  findAll(
+    @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.tasksService.findAll(organizationId, paginationDto);
   }
 
   @Get(':id')

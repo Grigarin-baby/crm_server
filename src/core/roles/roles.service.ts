@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class RolesService {
@@ -21,11 +22,21 @@ export class RolesService {
     });
   }
 
-  async findAll(organizationId: string) {
-    return this.prisma.role.findMany({
-      where: { organizationId },
-      include: { permissions: true },
-    });
+  async findAll(organizationId: string, paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.role.findMany({
+        where: { organizationId },
+        include: { permissions: true },
+        skip,
+        take,
+      }),
+      this.prisma.role.count({
+        where: { organizationId },
+      }),
+    ]);
+
+    return { items, total, skip, take };
   }
 
   async findOne(organizationId: string, id: string) {

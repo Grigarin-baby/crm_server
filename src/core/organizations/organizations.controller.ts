@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,6 +23,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('organizations')
 @ApiBearerAuth()
@@ -43,8 +45,8 @@ export class OrganizationsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN') // Only global admins or similar can list all orgs
   @ApiOperation({ summary: 'Get all organizations' })
-  findAll() {
-    return this.organizationsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.organizationsService.findAll(paginationDto);
   }
 
   @Get(':id')

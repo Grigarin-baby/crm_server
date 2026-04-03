@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../../../core/auth/jwt-auth.guard';
 import { TenantGuard } from '../../../core/auth/tenant.guard';
 import { TenantId } from '../../../core/tenant/tenant.decorator';
 import { RolesGuard } from '../../../core/auth/roles.guard';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @ApiTags('invoice-items')
 @ApiBearerAuth()
@@ -48,9 +49,14 @@ export class InvoiceItemsController {
   @ApiQuery({ name: 'invoiceId', required: false })
   findAll(
     @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
     @Query('invoiceId') invoiceId?: string,
   ) {
-    return this.invoiceItemsService.findAll(organizationId, invoiceId);
+    return this.invoiceItemsService.findAll(
+      organizationId,
+      paginationDto,
+      invoiceId,
+    );
   }
 
   @Get(':id')

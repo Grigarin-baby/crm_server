@@ -25,6 +25,7 @@ import { JwtAuthGuard } from '../../../core/auth/jwt-auth.guard';
 import { TenantGuard } from '../../../core/auth/tenant.guard';
 import { TenantId } from '../../../core/tenant/tenant.decorator';
 import { RolesGuard } from '../../../core/auth/roles.guard';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @ApiTags('sales-order-items')
 @ApiBearerAuth()
@@ -53,9 +54,14 @@ export class SalesOrderItemsController {
   @ApiQuery({ name: 'salesOrderId', required: false })
   findAll(
     @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
     @Query('salesOrderId') salesOrderId?: string,
   ) {
-    return this.salesOrderItemsService.findAll(organizationId, salesOrderId);
+    return this.salesOrderItemsService.findAll(
+      organizationId,
+      paginationDto,
+      salesOrderId,
+    );
   }
 
   @Get(':id')

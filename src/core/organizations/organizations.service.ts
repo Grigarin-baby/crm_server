@@ -4,6 +4,7 @@ import {
   CreateOrganizationDto,
   UpdateOrganizationDto,
 } from './organization.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class OrganizationsService {
@@ -15,8 +16,17 @@ export class OrganizationsService {
     });
   }
 
-  async findAll() {
-    return this.prisma.organization.findMany();
+  async findAll(paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.organization.findMany({
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.organization.count(),
+    ]);
+    return { items, total, skip, take };
   }
 
   async findOne(id: string) {

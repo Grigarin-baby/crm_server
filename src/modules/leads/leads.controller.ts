@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,6 +22,7 @@ import { TenantGuard } from '../../core/auth/tenant.guard';
 import { TenantId } from '../../core/tenant/tenant.decorator';
 import { Roles } from '../../core/auth/roles.decorator';
 import { RolesGuard } from '../../core/auth/roles.guard';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('leads')
 @ApiBearerAuth()
@@ -43,8 +45,11 @@ export class LeadsController {
   @Get()
   @Roles('ADMIN', 'SALES_MANAGER', 'SALES_REP')
   @ApiOperation({ summary: 'Get all leads for organization' })
-  findAll(@TenantId() organizationId: string) {
-    return this.leadsService.findAll(organizationId);
+  findAll(
+    @TenantId() organizationId: string,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.leadsService.findAll(organizationId, paginationDto);
   }
 
   @Get(':id')

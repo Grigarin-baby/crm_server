@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { CreateTicketDto, UpdateTicketDto } from './ticket.dto';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class TicketsService {
@@ -12,27 +13,27 @@ export class TicketsService {
     });
   }
 
-  async findAll(organizationId: string) {
-    return this.prisma.ticket.findMany({
-      where: { organizationId },
-      include: {
-        customer: true,
-        assignedAgent: {
-          select: { id: true, email: true, firstName: true, lastName: true },
-        },
-      },
-    });
+  async findAll(organizationId: string, paginationDto: PaginationDto) {
+    const { skip, take } = paginationDto;
+    const [items, total] = await Promise.all([
+      this.prisma.ticket.findMany({
+        where: { organizationId },
+        include: { customer: true, assignedAgent: true },
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.ticket.count({
+        where: { organizationId },
+      }),
+    ]);
+    return { items, total, skip, take };
   }
 
   async findOne(organizationId: string, id: string) {
     const ticket = await this.prisma.ticket.findFirst({
       where: { id, organizationId },
-      include: {
-        customer: true,
-        assignedAgent: {
-          select: { id: true, email: true, firstName: true, lastName: true },
-        },
-      },
+      include: { customer: true, assignedAgent: true },
     });
     if (!ticket) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return ticket;
