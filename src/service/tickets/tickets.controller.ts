@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('service/tickets')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('service/tickets')
 export class TicketsController {
@@ -34,7 +34,7 @@ export class TicketsController {
   @Post()
   @ApiOperation({ summary: 'Create a new support ticket' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createTicketDto: CreateTicketDto,
   ) {
     return this.ticketsService.create(organizationId, createTicketDto);
@@ -43,7 +43,7 @@ export class TicketsController {
   @Get()
   @ApiOperation({ summary: 'Get all tickets' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.ticketsService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class TicketsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a ticket by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.ticketsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a ticket' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateTicketDto: UpdateTicketDto,
   ) {
@@ -67,7 +67,7 @@ export class TicketsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a ticket' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.ticketsService.remove(organizationId, id);
   }
 }

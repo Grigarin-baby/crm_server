@@ -10,32 +10,35 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class PurchaseOrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreatePurchaseOrderDto) {
+  async create(organizationId: string | null, dto: CreatePurchaseOrderDto) {
     return this.prisma.purchaseOrder.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.purchaseOrder.findMany({
-        where: { organizationId },
+        where,
         include: { vendor: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.purchaseOrder.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const po = await this.prisma.purchaseOrder.findFirst({
-      where: { id, organizationId },
+      where,
       include: { vendor: true },
     });
     if (!po)
@@ -44,7 +47,7 @@ export class PurchaseOrdersService {
   }
 
   async update(
-    organizationId: string,
+    organizationId: string | null,
     id: string,
     dto: UpdatePurchaseOrderDto,
   ) {
@@ -55,7 +58,7 @@ export class PurchaseOrdersService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.purchaseOrder.delete({
       where: { id },

@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('sales-orders')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/sales-orders')
 export class SalesOrdersController {
@@ -34,7 +34,7 @@ export class SalesOrdersController {
   @Post()
   @ApiOperation({ summary: 'Create a new sales order' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createSalesOrderDto: CreateSalesOrderDto,
   ) {
     return this.salesOrdersService.create(organizationId, createSalesOrderDto);
@@ -43,7 +43,7 @@ export class SalesOrdersController {
   @Get()
   @ApiOperation({ summary: 'Get all sales orders' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.salesOrdersService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class SalesOrdersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a sales order by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.salesOrdersService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a sales order' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateSalesOrderDto: UpdateSalesOrderDto,
   ) {
@@ -71,7 +71,7 @@ export class SalesOrdersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a sales order' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.salesOrdersService.remove(organizationId, id);
   }
 }

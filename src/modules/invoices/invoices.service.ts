@@ -7,32 +7,35 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class InvoicesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateInvoiceDto) {
+  async create(organizationId: string | null, dto: CreateInvoiceDto) {
     return this.prisma.invoice.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.invoice.findMany({
-        where: { organizationId },
+        where,
         include: { customer: true, salesOrder: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.invoice.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const invoice = await this.prisma.invoice.findFirst({
-      where: { id, organizationId },
+      where,
       include: { customer: true, salesOrder: true },
     });
     if (!invoice)
@@ -40,7 +43,7 @@ export class InvoicesService {
     return invoice;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateInvoiceDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateInvoiceDto) {
     await this.findOne(organizationId, id);
     return this.prisma.invoice.update({
       where: { id },
@@ -48,7 +51,7 @@ export class InvoicesService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.invoice.delete({
       where: { id },

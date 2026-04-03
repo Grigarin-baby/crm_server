@@ -7,32 +7,35 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class SalesOrdersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateSalesOrderDto) {
+  async create(organizationId: string | null, dto: CreateSalesOrderDto) {
     return this.prisma.salesOrder.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.salesOrder.findMany({
-        where: { organizationId },
+        where,
         include: { customer: true, quote: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.salesOrder.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const order = await this.prisma.salesOrder.findFirst({
-      where: { id, organizationId },
+      where,
       include: { customer: true, quote: true },
     });
     if (!order)
@@ -40,7 +43,7 @@ export class SalesOrdersService {
     return order;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateSalesOrderDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateSalesOrderDto) {
     await this.findOne(organizationId, id);
     return this.prisma.salesOrder.update({
       where: { id },
@@ -48,7 +51,7 @@ export class SalesOrdersService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.salesOrder.delete({
       where: { id },

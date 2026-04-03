@@ -26,17 +26,17 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('core/roles')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('core/roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Create a new role' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createRoleDto: CreateRoleDto,
   ) {
     return this.rolesService.create(organizationId, createRoleDto);
@@ -45,7 +45,7 @@ export class RolesController {
   @Get()
   @ApiOperation({ summary: 'Get all roles' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.rolesService.findAll(organizationId, paginationDto);
@@ -53,15 +53,15 @@ export class RolesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a role by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.rolesService.findOne(organizationId, id);
   }
 
   @Patch(':id')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Update a role' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
   ) {
@@ -69,9 +69,9 @@ export class RolesController {
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Delete a role' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.rolesService.remove(organizationId, id);
   }
 }

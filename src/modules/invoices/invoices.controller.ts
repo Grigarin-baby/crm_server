@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('invoices')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/invoices')
 export class InvoicesController {
@@ -34,7 +34,7 @@ export class InvoicesController {
   @Post()
   @ApiOperation({ summary: 'Create a new invoice' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createInvoiceDto: CreateInvoiceDto,
   ) {
     return this.invoicesService.create(organizationId, createInvoiceDto);
@@ -43,7 +43,7 @@ export class InvoicesController {
   @Get()
   @ApiOperation({ summary: 'Get all invoices' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.invoicesService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class InvoicesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get an invoice by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.invoicesService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an invoice' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateInvoiceDto: UpdateInvoiceDto,
   ) {
@@ -67,7 +67,7 @@ export class InvoicesController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an invoice' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.invoicesService.remove(organizationId, id);
   }
 }

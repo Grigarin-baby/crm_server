@@ -7,35 +7,38 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class ContactsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateContactDto) {
+  async create(organizationId: string | null, dto: CreateContactDto) {
     return this.prisma.contact.create({
       data: {
         ...dto,
-        organizationId,
+        organizationId: organizationId as string, // Cast for prisma if needed, or handle null if schema allows
       },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.contact.findMany({
-        where: { organizationId },
+        where,
         include: { customer: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.contact.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const contact = await this.prisma.contact.findFirst({
-      where: { id, organizationId },
+      where,
       include: { customer: true },
     });
     if (!contact) {
@@ -44,7 +47,7 @@ export class ContactsService {
     return contact;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateContactDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateContactDto) {
     await this.findOne(organizationId, id);
     return this.prisma.contact.update({
       where: { id },
@@ -52,7 +55,7 @@ export class ContactsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.contact.delete({
       where: { id },

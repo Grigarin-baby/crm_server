@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('products')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/products')
 export class ProductsController {
@@ -34,7 +34,7 @@ export class ProductsController {
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createProductDto: CreateProductDto,
   ) {
     return this.productsService.create(organizationId, createProductDto);
@@ -43,7 +43,7 @@ export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'Get all products' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.productsService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class ProductsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a product by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.productsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
@@ -67,7 +67,7 @@ export class ProductsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.productsService.remove(organizationId, id);
   }
 }

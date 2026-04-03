@@ -7,33 +7,36 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class MeetingsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateMeetingDto) {
+  async create(organizationId: string | null, dto: CreateMeetingDto) {
     return this.prisma.meeting.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.meeting.findMany({
-        where: { organizationId },
+        where,
         include: { deal: true, contact: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.meeting.count({
-        where: { organizationId },
+        where,
       }),
     ]);
 
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const meeting = await this.prisma.meeting.findFirst({
-      where: { id, organizationId },
+      where,
       include: { deal: true, contact: true },
     });
     if (!meeting)
@@ -41,7 +44,7 @@ export class MeetingsService {
     return meeting;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateMeetingDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateMeetingDto) {
     await this.findOne(organizationId, id);
     return this.prisma.meeting.update({
       where: { id },
@@ -49,7 +52,7 @@ export class MeetingsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.meeting.delete({
       where: { id },

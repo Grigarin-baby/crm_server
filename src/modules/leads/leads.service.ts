@@ -16,11 +16,13 @@ export class LeadsService {
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.lead.findMany({
-        where: { organizationId },
+        where,
         skip,
         take,
         include: {
@@ -31,7 +33,7 @@ export class LeadsService {
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.lead.count({
-        where: { organizationId },
+        where,
       }),
     ]);
 
@@ -43,9 +45,10 @@ export class LeadsService {
     };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const lead = await this.prisma.lead.findFirst({
-      where: { id, organizationId },
+      where,
       include: {
         assignedUser: {
           select: { id: true, email: true, firstName: true, lastName: true },
@@ -54,13 +57,13 @@ export class LeadsService {
     });
     if (!lead) {
       throw new NotFoundException(
-        `Lead with ID ${id} not found in this organization`,
+        `Lead with ID ${id} not found`,
       );
     }
     return lead;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateLeadDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateLeadDto) {
     await this.findOne(organizationId, id);
     return this.prisma.lead.update({
       where: { id },
@@ -68,7 +71,7 @@ export class LeadsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.lead.delete({
       where: { id },

@@ -16,25 +16,28 @@ export class CustomersService {
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.customer.findMany({
-        where: { organizationId },
+        where,
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.customer.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const customer = await this.prisma.customer.findFirst({
-      where: { id, organizationId },
+      where,
       include: { contacts: true, deals: true },
     });
     if (!customer) {

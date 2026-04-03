@@ -7,12 +7,12 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class RolesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateRoleDto) {
+  async create(organizationId: string | null, dto: CreateRoleDto) {
     const { permissionIds, ...rest } = dto;
     return this.prisma.role.create({
       data: {
         ...rest,
-        organizationId,
+        organizationId: organizationId as string,
         permissions: permissionIds
           ? {
               connect: permissionIds.map((id) => ({ id })),
@@ -22,33 +22,36 @@ export class RolesService {
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.role.findMany({
-        where: { organizationId },
+        where,
         include: { permissions: true },
         skip,
         take,
       }),
       this.prisma.role.count({
-        where: { organizationId },
+        where,
       }),
     ]);
 
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const role = await this.prisma.role.findFirst({
-      where: { id, organizationId },
+      where,
       include: { permissions: true },
     });
     if (!role) throw new NotFoundException(`Role with ID ${id} not found`);
     return role;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateRoleDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateRoleDto) {
     const { permissionIds, ...rest } = dto;
     await this.findOne(organizationId, id);
     return this.prisma.role.update({
@@ -64,7 +67,7 @@ export class RolesService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.role.delete({
       where: { id },

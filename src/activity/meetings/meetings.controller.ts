@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('activity/meetings')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('activity/meetings')
 export class MeetingsController {
@@ -34,7 +34,7 @@ export class MeetingsController {
   @Post()
   @ApiOperation({ summary: 'Schedule a new meeting' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createMeetingDto: CreateMeetingDto,
   ) {
     return this.meetingsService.create(organizationId, createMeetingDto);
@@ -43,7 +43,7 @@ export class MeetingsController {
   @Get()
   @ApiOperation({ summary: 'Get all meetings' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.meetingsService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class MeetingsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a meeting by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.meetingsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update meeting details' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateMeetingDto: UpdateMeetingDto,
   ) {
@@ -67,7 +67,7 @@ export class MeetingsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Cancel a meeting' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.meetingsService.remove(organizationId, id);
   }
 }

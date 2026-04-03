@@ -26,17 +26,17 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('core/permissions')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('core/permissions')
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
   @Post()
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Create a new permission' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createPermissionDto: CreatePermissionDto,
   ) {
     return this.permissionsService.create(organizationId, createPermissionDto);
@@ -45,7 +45,7 @@ export class PermissionsController {
   @Get()
   @ApiOperation({ summary: 'Get all permissions' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.permissionsService.findAll(organizationId, paginationDto);
@@ -53,15 +53,15 @@ export class PermissionsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a permission by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.permissionsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Update a permission' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updatePermissionDto: UpdatePermissionDto,
   ) {
@@ -73,9 +73,9 @@ export class PermissionsController {
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @ApiOperation({ summary: 'Delete a permission' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.permissionsService.remove(organizationId, id);
   }
 }

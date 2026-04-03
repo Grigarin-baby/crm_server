@@ -7,53 +7,56 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class BranchesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateBranchDto) {
+  async create(organizationId: string | null, dto: CreateBranchDto) {
     return this.prisma.branch.create({
       data: {
         ...dto,
-        organizationId,
+        organizationId: organizationId as string,
       },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.branch.findMany({
-        where: { organizationId },
+        where,
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.branch.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const branch = await this.prisma.branch.findFirst({
-      where: { id, organizationId },
+      where,
     });
     if (!branch) {
       throw new NotFoundException(
-        `Branch with ID ${id} not found in this organization`,
+        `Branch with ID ${id} not found`,
       );
     }
     return branch;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateBranchDto) {
-    await this.findOne(organizationId, id); // Ensure it exists within organization
+  async update(organizationId: string | null, id: string, dto: UpdateBranchDto) {
+    await this.findOne(organizationId, id); // Ensure it exists
     return this.prisma.branch.update({
       where: { id },
       data: dto,
     });
   }
 
-  async remove(organizationId: string, id: string) {
-    await this.findOne(organizationId, id); // Ensure it exists within organization
+  async remove(organizationId: string | null, id: string) {
+    await this.findOne(organizationId, id); // Ensure it exists
     return this.prisma.branch.delete({
       where: { id },
     });

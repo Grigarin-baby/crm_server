@@ -2,25 +2,38 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateUserDto) {
+  async create(organizationId: string | null, dto: CreateUserDto) {
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    
+    // Prioritize organizationId from DTO (if provided by Super Admin)
+    const finalOrgId = dto.organizationId || organizationId || null;
+
     return this.prisma.user.create({
       data: {
-        ...dto,
-        organizationId,
+        email: dto.email,
+        password: hashedPassword,
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        role: dto.role as any,
+        organizationId: finalOrgId,
+        branchId: dto.branchId || null,
       },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.user.findMany({
-        where: { organizationId },
+        where,
         select: {
           id: true,
           email: true,
@@ -36,16 +49,17 @@ export class UsersService {
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.user.count({
-        where: { organizationId },
+        where,
       }),
     ]);
 
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const user = await this.prisma.user.findFirst({
-      where: { id, organizationId },
+      where,
       select: {
         id: true,
         email: true,
@@ -61,15 +75,25 @@ export class UsersService {
     return user;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateUserDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateUserDto) {
     await this.findOne(organizationId, id);
+    
+    // Prioritize organizationId from DTO if provided
+    const finalOrgId = dto.organizationId || organizationId || undefined;
+
     return this.prisma.user.update({
       where: { id },
-      data: dto,
+      data: {
+        firstName: dto.firstName,
+        lastName: dto.lastName,
+        role: dto.role as any,
+        branchId: dto.branchId,
+        organizationId: finalOrgId,
+      },
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.user.delete({
       where: { id },

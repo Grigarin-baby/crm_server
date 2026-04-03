@@ -7,40 +7,43 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class CallsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateCallDto) {
+  async create(organizationId: string | null, dto: CreateCallDto) {
     return this.prisma.call.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.call.findMany({
-        where: { organizationId },
+        where,
         include: { contact: true, deal: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.call.count({
-        where: { organizationId },
+        where,
       }),
     ]);
 
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const call = await this.prisma.call.findFirst({
-      where: { id, organizationId },
+      where,
       include: { contact: true, deal: true },
     });
     if (!call) throw new NotFoundException(`Call log with ID ${id} not found`);
     return call;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateCallDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateCallDto) {
     await this.findOne(organizationId, id);
     return this.prisma.call.update({
       where: { id },
@@ -48,7 +51,7 @@ export class CallsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.call.delete({
       where: { id },

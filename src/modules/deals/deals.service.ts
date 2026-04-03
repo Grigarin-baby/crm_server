@@ -16,11 +16,13 @@ export class DealsService {
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.deal.findMany({
-        where: { organizationId },
+        where,
         include: {
           customer: true,
           assignedUser: {
@@ -32,15 +34,16 @@ export class DealsService {
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.deal.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const deal = await this.prisma.deal.findFirst({
-      where: { id, organizationId },
+      where,
       include: {
         customer: true,
         assignedUser: {
@@ -58,7 +61,7 @@ export class DealsService {
     return deal;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateDealDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateDealDto) {
     await this.findOne(organizationId, id);
     return this.prisma.deal.update({
       where: { id },
@@ -66,7 +69,7 @@ export class DealsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.deal.delete({
       where: { id },

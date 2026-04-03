@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('activity/tasks')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('activity/tasks')
 export class TasksController {
@@ -34,7 +34,7 @@ export class TasksController {
   @Post()
   @ApiOperation({ summary: 'Create a new task' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createTaskDto: CreateTaskDto,
   ) {
     return this.tasksService.create(organizationId, createTaskDto);
@@ -43,7 +43,7 @@ export class TasksController {
   @Get()
   @ApiOperation({ summary: 'Get all tasks' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.tasksService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class TasksController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a task by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.tasksService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a task' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
   ) {
@@ -67,7 +67,7 @@ export class TasksController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a task' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.tasksService.remove(organizationId, id);
   }
 }

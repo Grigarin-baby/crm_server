@@ -7,39 +7,42 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 export class TicketsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(organizationId: string, dto: CreateTicketDto) {
+  async create(organizationId: string | null, dto: CreateTicketDto) {
     return this.prisma.ticket.create({
-      data: { ...dto, organizationId },
+      data: { ...dto, organizationId: organizationId as string },
     });
   }
 
-  async findAll(organizationId: string, paginationDto: PaginationDto) {
+  async findAll(organizationId: string | null, paginationDto: PaginationDto) {
     const { skip, take } = paginationDto;
+    const where = organizationId ? { organizationId } : {};
+    
     const [items, total] = await Promise.all([
       this.prisma.ticket.findMany({
-        where: { organizationId },
+        where,
         include: { customer: true, assignedAgent: true },
         skip,
         take,
         orderBy: { createdAt: 'desc' },
       }),
       this.prisma.ticket.count({
-        where: { organizationId },
+        where,
       }),
     ]);
     return { items, total, skip, take };
   }
 
-  async findOne(organizationId: string, id: string) {
+  async findOne(organizationId: string | null, id: string) {
+    const where = organizationId ? { id, organizationId } : { id };
     const ticket = await this.prisma.ticket.findFirst({
-      where: { id, organizationId },
+      where,
       include: { customer: true, assignedAgent: true },
     });
     if (!ticket) throw new NotFoundException(`Ticket with ID ${id} not found`);
     return ticket;
   }
 
-  async update(organizationId: string, id: string, dto: UpdateTicketDto) {
+  async update(organizationId: string | null, id: string, dto: UpdateTicketDto) {
     await this.findOne(organizationId, id);
     return this.prisma.ticket.update({
       where: { id },
@@ -47,7 +50,7 @@ export class TicketsService {
     });
   }
 
-  async remove(organizationId: string, id: string) {
+  async remove(organizationId: string | null, id: string) {
     await this.findOne(organizationId, id);
     return this.prisma.ticket.delete({
       where: { id },

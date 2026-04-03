@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('activity/calls')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('activity/calls')
 export class CallsController {
@@ -34,7 +34,7 @@ export class CallsController {
   @Post()
   @ApiOperation({ summary: 'Log a new call' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createCallDto: CreateCallDto,
   ) {
     return this.callsService.create(organizationId, createCallDto);
@@ -43,7 +43,7 @@ export class CallsController {
   @Get()
   @ApiOperation({ summary: 'Get all call logs' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.callsService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class CallsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a call log by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.callsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a call log' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateCallDto: UpdateCallDto,
   ) {
@@ -67,7 +67,7 @@ export class CallsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a call log' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.callsService.remove(organizationId, id);
   }
 }

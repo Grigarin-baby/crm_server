@@ -8,6 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum UserRole {
+  SUPER_ADMIN = 'SUPER_ADMIN',
   ADMIN = 'ADMIN',
   SALES_MANAGER = 'SALES_MANAGER',
   SALES_REP = 'SALES_REP',
@@ -45,6 +46,11 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   branchId?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  organizationId?: string;
 }
 
 export class UpdateUserDto {
@@ -67,4 +73,9 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   branchId?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  organizationId?: string;
 }

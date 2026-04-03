@@ -23,6 +23,7 @@ import { TasksModule } from './activity/tasks/tasks.module';
 import { TicketsModule } from './service/tickets/tickets.module';
 import { RolesModule } from './core/roles/roles.module';
 import { PermissionsModule } from './core/permissions/permissions.module';
+import { AdminStatsModule } from './core/admin-stats/admin-stats.module';
 
 import { VendorsModule } from './modules/vendors/vendors.module';
 import { ProductsModule } from './modules/products/products.module';
@@ -63,6 +64,7 @@ import { PurchaseOrderItemsModule } from './modules/purchase-orders/purchase-ord
     TicketsModule,
     RolesModule,
     PermissionsModule,
+    AdminStatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

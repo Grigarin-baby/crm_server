@@ -15,7 +15,7 @@ import { TenantId } from '../tenant/tenant.decorator';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('users')
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @Controller('core/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -23,7 +23,7 @@ export class UsersController {
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createUserDto: CreateUserDto,
   ) {
     return this.usersService.create(organizationId, createUserDto);
@@ -32,7 +32,7 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Get all users for organization' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.usersService.findAll(organizationId, paginationDto);
@@ -40,14 +40,14 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.usersService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
@@ -56,7 +56,7 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.usersService.remove(organizationId, id);
   }
 }

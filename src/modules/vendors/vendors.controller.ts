@@ -25,7 +25,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('vendors')
 @ApiBearerAuth()
-@ApiHeader({ name: 'x-organization-id', required: true })
+@ApiHeader({ name: 'x-organization-id', required: false })
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
 @Controller('modules/vendors')
 export class VendorsController {
@@ -34,7 +34,7 @@ export class VendorsController {
   @Post()
   @ApiOperation({ summary: 'Create a new vendor' })
   create(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Body() createVendorDto: CreateVendorDto,
   ) {
     return this.vendorsService.create(organizationId, createVendorDto);
@@ -43,7 +43,7 @@ export class VendorsController {
   @Get()
   @ApiOperation({ summary: 'Get all vendors' })
   findAll(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.vendorsService.findAll(organizationId, paginationDto);
@@ -51,14 +51,14 @@ export class VendorsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a vendor by ID' })
-  findOne(@TenantId() organizationId: string, @Param('id') id: string) {
+  findOne(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.vendorsService.findOne(organizationId, id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a vendor' })
   update(
-    @TenantId() organizationId: string,
+    @TenantId() organizationId: string | null,
     @Param('id') id: string,
     @Body() updateVendorDto: UpdateVendorDto,
   ) {
@@ -67,7 +67,7 @@ export class VendorsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a vendor' })
-  remove(@TenantId() organizationId: string, @Param('id') id: string) {
+  remove(@TenantId() organizationId: string | null, @Param('id') id: string) {
     return this.vendorsService.remove(organizationId, id);
   }
 }
